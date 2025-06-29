@@ -1,0 +1,406 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Languages (UI)_pt
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: pt
+  m_SharedData: {fileID: 11400000, guid: 698e167bd107c3a40a5376082f2e2f35, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 96968105984
+    m_Localized: MATE ENGINE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11105833312256
+    m_Localized: "Intervalo entre anima\xE7\xF5es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11236599128064
+    m_Localized: "Tempo de transi\xE7\xE3o entre anima\xE7\xF5es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11239019241472
+    m_Localized: "Volume m\xEDnimo para come\xE7ar a dan\xE7ar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11241108004864
+    m_Localized: "Avatar sempre vis\xEDvel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11243918188544
+    m_Localized: "Avatar pode dan\xE7ar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11244643803136
+    m_Localized: "Cabe\xE7a segue o mouse"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11245205839872
+    m_Localized: Tamanho do Avatar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11245612687360
+    m_Localized: Salvar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11320741060608
+    m_Localized: Reiniciar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11321303097344
+    m_Localized: "Quant. de Pol\xEDgonos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11321839968256
+    m_Localized: Quant. de Ossos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11796140253184
+    m_Localized: Limite de FPS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23418267230208
+    m_Localized: "Configura\xE7\xF5es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23684911718400
+    m_Localized: Volume do Pet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24123241652224
+    m_Localized: Volume de Efeitos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24123816271872
+    m_Localized: Volume do Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24124437028864
+    m_Localized: "Gr\xE1ficos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24125049397248
+    m_Localized: Ultra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24125577879552
+    m_Localized: Muito Alto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24126186053632
+    m_Localized: Alto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24126735507456
+    m_Localized: Normal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24509532856320
+    m_Localized: Baixo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24510153613312
+    m_Localized: DLCs da Steam
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24510665318400
+    m_Localized: "Aur\xE9ola da Flor"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27326909767680
+    m_Localized: Adicionar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27328117727232
+    m_Localized: Remover
+    m_Metadata:
+      m_Items: []
+  - m_Id: 37370367827968
+    m_Localized: Idioma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1494291876667392
+    m_Localized: Carregar MOD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1494319580045312
+    m_Localized: Experimental
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1494394716807168
+    m_Localized: Sentar nas Janelas ou na Barra de Tarefas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1494416451690496
+    m_Localized: "Essa op\xE7\xE3o pode causar BANIMENTO em jogos com anti-cheat"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1971210921435136
+    m_Localized: "Discord Presen\xE7a Rica (RPC)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1971386927013888
+    m_Localized: "Ingl\xEAs"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1971391947595776
+    m_Localized: Russo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1971392559964160
+    m_Localized: "Japon\xEAs"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1971393197498368
+    m_Localized: Espanhol
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1971466828505088
+    m_Localized: "Chin\xEAs"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1982288996851712
+    m_Localized: Coreano
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2011903232565248
+    m_Localized: "Bem-vindo a \u30E1\u30A4\u30C8\u30A8\u30F3\u30B8\u30F3 (MateEngine)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2012023386791936
+    m_Localized: "Este \xE9 um aplicativo ainda em desenvolvimento, e novas funcionalidades
+      podem ser adicionadas com o tempo. Este app foi feito pela comunidade Otaku,
+      para a comunidade Otaku. Podem haver alguns pequenos problemas aqui e ali -
+      se voc\xEA achar algum problema, pode reportar ele no menu, clicando com o
+      bot\xE3o direito no pet e clicando no \xEDcone de bug(inseto)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2012176361447424
+    m_Localized: "Como usar o MateEnguine (Guia R\xE1pido)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2012219415977984
+    m_Localized: "Usar o MateEngine \xE9 muito f\xE1cil! Basta clicar com o bot\xE3o
+      direito para abrir o menu. Aqui, voc\xEA pode ajustar o tamanho do avatar,
+      ativar ou desativar efeitos, selecionar quais aplicativos podem fazer seu avatar
+      dan\xE7ar, e at\xE9 carregar mods e modelos VRM/ME customizados. No pr\xF3ximo
+      passo, vou explicar como carregar avatares customizados."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2012314333077504
+    m_Localized: Usando modelos Customizados 1/2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2012317843709952
+    m_Localized: "Para usar seu pr\xF3prio modelo, voc\xEA precisa de um arquivo
+      .VRM. Voc\xEA pode baixar alguns modelos VRM de sites como Booth.jp e VroidHub.
+      Uma vez que voc\xEA tem o arquivo VRM, abra o menu e clique no bot\xE3o \"VRM\".
+      Isso vai abrir o explorador de arquivos pra voc\xEA selecionar seu arquivo
+      .VRM."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2012431912001536
+    m_Localized: Usando modelos Customizados 2/2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2012464099090432
+    m_Localized: "As vezes um arquivo .VRM pode falhar em carregar. Normalmente n\xE3o
+      \xE9 um problema com o MateEngine em si, geralmente \xE9 algum problema com
+      shaders ou armaduras mal configuradas durante a exporta\xE7\xE3o do arquivo
+      VRM. Alguns apps usam alguns m\xE9todos caso encontrem erros assim para corrigir
+      modelos quebrados, mas o MateEngine n\xE3o faz isso (e n\xE3o vai). Voc\xEA
+      \xE9 respons\xE1vel por ter certeza que seu arquivo VRM foi exportado corretamente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2024289331044352
+    m_Localized: "Language - \u8A00\u8A9E (Gengo) - \u042F\u0437\u044B\u043A (Yazyk)
+      - Idioma - \u8A9E\u8A00 (Y\u01D4y\xE1n) - Sprache - Langue - \uC5B8\uC5B4 (Eoneo)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2024320264036352
+    m_Localized: Pular
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2024395421769728
+    m_Localized: Finalizar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2024529517862912
+    m_Localized: Voltar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2024532080582656
+    m_Localized: "Pr\xF3ximo"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7781828886781952
+    m_Localized: "Movimento m\xE1ximo da Cabe\xE7a"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7781852853035008
+    m_Localized: "Movimento m\xE1ximo da Coluna"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7781877666537472
+    m_Localized: "Rastreio das m\xE3os"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7781899598553088
+    m_Localized: Cor do menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7781916468043776
+    m_Localized: "Satura\xE7\xE3o do menu"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7781941810028544
+    m_Localized: Modelos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7781977230925824
+    m_Localized: Carregar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9722136935522304
+    m_Localized: O arquivo PNG deve ser menor que 700KB.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9724442586374144
+    m_Localized: Imagem Faltando
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9725012508401664
+    m_Localized: Upload
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9844627515367424
+    m_Localized: "Movimento m\xE1ximo dos Olhos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11144201018269696
+    m_Localized: "IK dos p\xE9s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11144228465795072
+    m_Localized: "A maioria dos modelos vai ficar melhor com IK dos p\xE9s ativada.
+      Se n\xE3o, desative para um estilo de movimento mais feminino."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11147404514418688
+    m_Localized: "Ocluis\xE3o de Ambiente"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13999268343832576
+    m_Localized: Descanso de tela
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13999269778284544
+    m_Localized: "Depois de algum tempo, o pet vai aparecer bem grande na tela, e
+      vai rodar uma anima\xE7\xE3o de descanso at\xE9 voc\xEA interagir novamente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14037793143513088
+    m_Localized: "Tempo at\xE9 o Descanso de tela"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14037795504906240
+    m_Localized: "Depura\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14037796842889216
+    m_Localized: "GC For\xE7ado"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14037800621957120
+    m_Localized: "Roda uma Garbage Collection de forma for\xE7ada. Essa \xE9 uma
+      fun\xE7\xE3o de depura\xE7\xE3o, n\xE3o use a menos que saiba o que est\xE1
+      fazendo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21396842692468736
+    m_Localized: Ativar Alarme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21396846479925248
+    m_Localized: "Fun\xE7\xE3o EXPERIMENTAL:\r\nO ALARME VAI DESLIGAR ASSIM QUE FOR
+      TOCADO UMA VEZ."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397663471624192
+    m_Localized: "Ilumina\xE7\xE3o Ambiente"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397935245746176
+    m_Localized: Ambi1 Intensidade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397936617283584
+    m_Localized: "Ambi1 Satura\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397937200291840
+    m_Localized: Ambi1 Cor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397937758134272
+    m_Localized: Ambi2 Intensidade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397938295005184
+    m_Localized: "Ambi2 Satura\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397938898984960
+    m_Localized: Ambi2 Cor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21397939494576128
+    m_Localized: Ambi3 Intensidade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21398132755521536
+    m_Localized: "Ambi3 Satura\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21398134148030464
+    m_Localized: Ambi3 Cor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21399717254520832
+    m_Localized: "Ativar Ilumina\xE7\xE3o Ambiente"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21399718462480384
+    m_Localized: Ativar Luz
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21400106955694080
+    m_Localized: "Ilumina\xE7\xE3o Global"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21400294541746176
+    m_Localized: Intensidade da Luz
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21400296517263360
+    m_Localized: "Satura\xE7\xE3o da Luz"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21400297775554560
+    m_Localized: Cor da Luz
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
