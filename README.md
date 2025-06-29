@@ -1,3 +1,36 @@
+Idioma: [Inglês](#this-is-a-fork-from-mate-engine) [Portugês](#este-é-um-fork-do-mate-engine)
+
+# This is a Fork from [Mate Engine](https://github.com/shinyflvre/Mate-Engine)
+##   There will be some changes and and new things i wanted.
+
+- Portuguese Language added 🇧🇷
+- Language selection settings changed
+  
+- *New Screen Light Detection* (opening main_tray.exe will update the color of new lights on the avatar, if you dont want to use just open *LightDetectionReset.bat* to disable the new lights)
+
+![ScreenLight1](https://i.imgur.com/1jmszcU.gif)
+
+To use it, just reduce the lights intensity on the Mate Engine Settings and open **main_tray.exe**
+(the main_tray.exe is the same as media_cores_tela.py if you wanna do a main_tray.exe yourself just use pyinstaller on media_cores_tela.py)
+
+## To Do
+- Change the way the new color is send to mateengine
+- Add settings to the light detector
+- Improve Changing lights position
+---
+---
+# Este é um fork do [Mate Engine](https://github.com/shinyflvre/Mate-Engine)
+##   Aqui vou mudar algumas coisas e adicionar outras que eu gostaria.
+
+- Idioma Português adicionado 🇧🇷 (o principal motivo era ter o mate engine em português ptbr)
+- Mudanças na configuração de idioma
+
+- *Novo sistema de detecção de luz* (abrindo main_tray.exe vai atualizar novas cores no avatar, se você não quiser usar é só abrir *LightDetectionReset.bat* para desativar as novas luzes)
+- ![ScreenLight1](https://i.imgur.com/1jmszcU.gif)
+
+
+# Original Mate-Engine readme
+---
 # 🌐 Language / 言語選択
 
 - [English](#English)
@@ -91,7 +124,7 @@ Thanks to the amazing support of the community, **Mate Engine** will be released
 - Dreezer – $45.00
 
 If you’d like to help with future updates or cover Steam fees, you can donate via **PayPal**:  
-**johnson@soultechno.de**  
+**I will remove the email here, cause if you wanna donate, check how on the original mate engine github page [Mate Engine](https://github.com/shinyflvre/Mate-Engine)
 (*Please add a note: “MateEngine Donation”*)
 
 ---
@@ -275,7 +308,7 @@ If you like it, share it or support it — but most of all, enjoy it.
 - Dreezer – $45.00
 
 **支援はこちらから：**  
-PayPal: **johnson@soultechno.de**  
+オリジナル(MATE ENGINE)GitHubページ [Mate Engine](https://github.com/shinyflvre/Mate-Engine)
 （※「MateEngine Donation」と記載してください）
 
 ---
