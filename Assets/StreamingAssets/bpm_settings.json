@@ -1,0 +1,12 @@
+{
+  "SAMPLE_RATE": 44100,
+  "DURATION": 3,
+  "PRECISION_IN_MS": 20,
+  "MIN_BPM": 60,
+  "MAX_BPM": 250,
+  "CONSIDERATION_TIME": 8,
+  "LOWCUT": 30.0,
+  "HIGHCUT": 190.0,
+  "salvar_somente_se_estavel": true,
+  "intervalo_considerado_estavel": 3
+}
