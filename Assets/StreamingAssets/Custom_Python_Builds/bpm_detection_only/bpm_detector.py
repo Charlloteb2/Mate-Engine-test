@@ -4,21 +4,45 @@ import time
 import json
 import warnings
 import os
+import sys
 from soundcard import SoundcardRuntimeWarning
 from scipy.signal import butter, lfilter
+import pywintypes
+import socket
+
 
 warnings.filterwarnings("ignore", category=SoundcardRuntimeWarning)
 
 # === DIRETÓRIO BASE DO SCRIPT ===
-import sys
-import os
 
-BASE_DIR = os.path.dirname(sys.executable)
+bpmsettings = "bpm_settings.json"
+jsonpath = "bpm_config.json"
+deviceconfigpath = "bpm_device_config.json"
+
+def fix_dir(dir):
+    config_name = dir
+
+    if getattr(sys, 'frozen', False):
+        application_path = os.path.dirname(sys.executable)
+        running_mode = 'Frozen/executable'
+    else:
+        try:
+            app_full_path = os.path.realpath(__file__)
+            application_path = os.path.dirname(app_full_path)
+            running_mode = "Non-interactive (e.g. 'python myapp.py')"
+        except NameError:
+            application_path = os.getcwd()
+            running_mode = 'Interactive'
+
+    return os.path.join(application_path, config_name)
 
 
-BPM_SETTINGS_PATH = os.path.join(BASE_DIR, "bpm_settings.json")
-BPM_JSON_PATH = os.path.join(BASE_DIR, "bpm_config.json")
-DEVICE_CONFIG_PATH = os.path.join(BASE_DIR, "bpm_device_config.json")
+BPM_SETTINGS_PATH = fix_dir(bpmsettings)
+BPM_JSON_PATH = fix_dir(jsonpath)
+DEVICE_CONFIG_PATH = fix_dir(deviceconfigpath)
+
+print(f"{BPM_SETTINGS_PATH}")
+
 
 # === CARREGAR CONFIGURAÇÕES ===
 with open(BPM_SETTINGS_PATH, "r") as f:
@@ -41,7 +65,21 @@ beat_timestamps = []
 smoothed_bpm = None
 bpm_history = []
 
+# === constantes ===
+UDP_IP = "127.0.0.1"
+UDP_PORT = 9955
+
 # === FUNÇÕES ===
+
+def send_bpm_via_udp(bpm):
+    message = f"{int(bpm)}\n".encode('utf-8')
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(message, (UDP_IP, UDP_PORT))
+        print(f" BPM enviado via UDP: {bpm}")
+    except Exception as e:
+        print(f" Erro ao enviar BPM via UDP: {e}")
+
 
 def butter_bandpass(lowcut, highcut, fs, order=2):
     nyq = 0.5 * fs
@@ -119,9 +157,6 @@ def bpm_estavel():
 # === MAIN ===
 
 def main():
-    cached_pause_state = False
-    last_pause_check = 0
-
     loopbacks = sc.all_microphones(include_loopback=True)
     if not loopbacks:
         print("Nenhum dispositivo loopback encontrado.")
@@ -142,35 +177,7 @@ def main():
     with mic.recorder(samplerate=SAMPLE_RATE) as recorder:
         try:
             while True:
-                # === CHECAR PAUSA A CADA 3 SEGUNDOS ===
-                now = time.time()
-                if now - last_pause_check >= 3.0:
-                    try:
-                        with open(os.path.join(BASE_DIR, "pause_flag.json"), "r") as f:
-                            pause_value = json.load(f)
-                            new_pause_state = pause_value == True or str(pause_value).lower() == "true"
-                            if new_pause_state != cached_pause_state:
-                                cached_pause_state = new_pause_state
-                                if cached_pause_state:
-                                    print("[BPM] Pausado pelo Unity.")
-                                else:
-                                    print("[BPM] Retomando detecção.")
-                    except FileNotFoundError:
-                        if cached_pause_state:
-                            print("[BPM] Retomando detecção.")
-                        cached_pause_state = False
-                    except Exception as e:
-                        print(f"[BPM] Erro ao checar pause_flag.json: {e}")
-                        cached_pause_state = False
-
-                    last_pause_check = now
-
-                if cached_pause_state:
-                    time.sleep(0.5)
-                    continue
-
                 print(f"\n[{time.strftime('%H:%M:%S')}] Gravando {DURATION}s...")
-
                 audio = recorder.record(numframes=SAMPLE_RATE * DURATION)
 
                 if len(audio.shape) > 1 and audio.shape[1] > 1:
@@ -199,10 +206,10 @@ def main():
                     if bpm:
                         bpm = smooth_bpm(bpm)
                         bpm_history.append(bpm)
-                        print(f"Batidas detectadas: {len(peaks)} - BPM: {bpm}")
+                        print(f" Batidas detectadas: {len(peaks)} → BPM: {bpm}")
                         if not SALVAR_SOMENTE_SE_ESTAVEL or bpm_estavel():
                             print(" BPM salvo.")
-                            save_bpm_to_json(bpm)
+                            send_bpm_via_udp(bpm)
                         else:
                             print(" BPM instável — não salvo.")
                     else:

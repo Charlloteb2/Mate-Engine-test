@@ -146,7 +146,7 @@ public class PythonToggleHeadless : MonoBehaviour
         {
             procRef = new Process();
             procRef.StartInfo.FileName = exePath;
-            procRef.StartInfo.UseShellExecute = false;
+            procRef.StartInfo.UseShellExecute = true;
             procRef.StartInfo.CreateNoWindow = true;
             procRef.Start();
 

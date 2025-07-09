@@ -1740,7 +1740,7 @@ AnimatorState:
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 1462451996290642774}
-  m_Tag: 
+  m_Tag: IsDance
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 

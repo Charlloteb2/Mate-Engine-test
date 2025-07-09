@@ -1,20 +1,32 @@
 ﻿using UnityEngine;
 using NAudio.CoreAudioApi;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics; // This using causes the ambiguity for Debug
 using System.Collections;
+using System; 
 
 public class AvatarAnimatorController : MonoBehaviour
 {
-    public Animator animator;
+    [Header("Core References")]
+    public Animator animator; // Esta referência será o Animator ativo
+    public DynamicDanceSync dynamicDanceSync; // Referência para o sistema de dança
+
+    [Header("Audio Detection")]
     public float SOUND_THRESHOLD = 0.02f;
     public List<string> allowedApps = new();
+
+    [Header("Animation Logic")]
     public int totalIdleAnimations = 10;
     public float IDLE_SWITCH_TIME = 12f, IDLE_TRANSITION_TIME = 3f;
     public int DANCE_CLIP_COUNT = 5;
     public bool enableDancing = true;
     public bool BlockDraggingOverride = false;
+    public string greetingAnimationStateName = "Intro"; // Você queria isso permanente, o VRMLoader já garante isso!
 
+    // --- Variáveis Internas ---
+    private bool isDanceSyncInitialized = false; // NOSSA NOVA FLAG DE CONTROLE!
+    private Animator _previousAnimator;
+    
     private static readonly int danceIndexParam = Animator.StringToHash("DanceIndex");
     private static readonly int isIdleParam = Animator.StringToHash("isIdle");
     private static readonly int isDraggingParam = Animator.StringToHash("isDragging");
@@ -29,90 +41,93 @@ public class AvatarAnimatorController : MonoBehaviour
     private float dragLockTimer;
     private bool mouseHeld;
     public bool isDragging, isDancing, isIdle;
+    private int currentDanceIndex;
 
     void OnEnable()
     {
-        animator ??= GetComponent<Animator>();
+        // Reseta o estado de inicialização sempre que o objeto é ativado
+        isDanceSyncInitialized = false;
+
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        // A tentativa inicial de setup ainda pode acontecer aqui, mas sem problemas se falhar.
+        // A lógica no Update() garantirá que a conexão seja feita eventualmente.
+        SetupAnimatorAndDanceSync(animator);
+
         Application.runInBackground = true;
-        enumerator = new MMDeviceEnumerator();
-        defaultDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-        soundCheckCoroutine = StartCoroutine(CheckSoundContinuously());
-    }
-    void OnDisable() => CleanupAudioResources();
-    void OnDestroy() => CleanupAudioResources();
-    void OnApplicationQuit() => CleanupAudioResources();
-
-    IEnumerator CheckSoundContinuously()
-    {
-        var wait = new WaitForSeconds(2f);
-        while (true) { CheckForSound(); yield return wait; }
-    }
-
-    void CheckForSound()
-    {
-        if (MenuActions.IsMovementBlocked() || !enableDancing)
-        {
-            if (isDancing) SetDancing(false);
-            return;
-        }
-        if (defaultDevice == null) return;
-        if (!isDragging)
-        {
-            bool valid = IsValidAppPlaying();
-            if (valid && !isDancing) StartDancing();
-            else if (!valid && isDancing) SetDancing(false);
-        }
-    }
-
-    void StartDancing()
-    {
-        isDancing = true;
-        animator.SetBool(isDancingParam, true);
-        animator.SetFloat(danceIndexParam, Random.Range(0, DANCE_CLIP_COUNT));
-    }
-    void SetDancing(bool value)
-    {
-        isDancing = value;
-        animator.SetBool(isDancingParam, value);
-    }
-
-    bool IsValidAppPlaying()
-    {
-        if (Time.time - lastSoundCheckTime < 2f) return isDancing;
-        lastSoundCheckTime = Time.time;
+        
         try
         {
-            defaultDevice?.Dispose();
+            enumerator = new MMDeviceEnumerator();
             defaultDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-            var sessions = defaultDevice.AudioSessionManager.Sessions;
-            for (int i = 0, count = sessions.Count; i < count; i++)
-            {
-                var s = sessions[i];
-                if (s.AudioMeterInformation.MasterPeakValue > SOUND_THRESHOLD)
-                {
-                    int pid = (int)s.GetProcessID;
-                    if (pid == 0) continue;
-                    try
-                    {
-                        string pname = Process.GetProcessById(pid)?.ProcessName;
-                        if (string.IsNullOrEmpty(pname)) continue;
-                        for (int j = 0; j < allowedApps.Count; j++)
-                            if (pname.StartsWith(allowedApps[j], System.StringComparison.OrdinalIgnoreCase)) return true;
-                    }
-                    catch { continue; }
-                }
-            }
         }
-        catch { defaultDevice?.Dispose(); defaultDevice = null; }
-        return false;
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogError("[AvatarAnimatorController] Falha ao inicializar dispositivo de áudio: " + e.Message);
+        }
+        
+        if (soundCheckCoroutine != null) StopCoroutine(soundCheckCoroutine);
+        soundCheckCoroutine = StartCoroutine(CheckSoundContinuously());
+    }
+
+    // Este método agora é a única fonte da verdade para configurar a conexão.
+    public void SetupAnimatorAndDanceSync(Animator newAnimator)
+    {
+        if (newAnimator == null)
+        {
+            UnityEngine.Debug.LogWarning("[AvatarAnimatorController] Tentativa de configurar um Animator nulo.");
+            animator = null; 
+            return;
+        }
+
+        animator = newAnimator;
+        _previousAnimator = newAnimator;
+        
+        // Se a referência do DanceSync existir, faz a conexão e marca como inicializado.
+        if (dynamicDanceSync != null)
+        {
+            UnityEngine.Debug.Log($"[AvatarAnimatorController] Conexão estabelecida! Enviando Animator '{animator.gameObject.name}' para DynamicDanceSync.");
+            dynamicDanceSync.SetTargetAnimator(animator);
+            isDanceSyncInitialized = true; // SUCESSO!
+        }
+        else
+        {
+            // Se não, marca que ainda precisa inicializar. O Update() tentará de novo.
+            UnityEngine.Debug.LogWarning($"[AvatarAnimatorController] 'dynamicDanceSync' ainda é nulo para o avatar '{animator.gameObject.name}'. Tentando novamente no próximo frame.");
+            isDanceSyncInitialized = false;
+        }
+
+        // Força a atualização dos estados para o novo animator
+        UpdateAllStates();
     }
 
     void Update()
     {
-        if (BlockDraggingOverride || MenuActions.IsMovementBlocked() || TutorialMenu.IsActive)
+        // ----- NOSSA NOVA LÓGICA DE VERIFICAÇÃO -----
+        // Se a conexão ainda não foi feita E a referência do DanceSync já foi preenchida pelo VRMLoader...
+        if (!isDanceSyncInitialized && dynamicDanceSync != null)
+        {
+            // ... então agora é a hora certa de fazer a configuração!
+            SetupAnimatorAndDanceSync(this.animator);
+        }
+        // ---------------------------------------------
+
+        if (animator == null) return;
+        
+        // Esta verificação extra garante que se o animator for trocado manualmente, a conexão seja refeita.
+        if (animator != _previousAnimator)
+        {
+            SetupAnimatorAndDanceSync(animator);
+        }
+
+        // Lógica de Dragging
+        if (BlockDraggingOverride || MenuActions.IsMovementBlocked() || (typeof(TutorialMenu) != null && TutorialMenu.IsActive))
         {
             if (isDragging) SetDragging(false);
-            if (isDancing) SetDancing(false);
+            if (isDancing) SetDancing(false); 
             return;
         }
         if (Input.GetMouseButtonDown(0))
@@ -120,7 +135,7 @@ public class AvatarAnimatorController : MonoBehaviour
             SetDragging(true);
             mouseHeld = true;
             dragLockTimer = 0.30f;
-            SetDancing(false);
+            if(isDancing) SetDancing(false);
         }
         if (Input.GetMouseButtonUp(0)) mouseHeld = false;
         if (dragLockTimer > 0f)
@@ -130,6 +145,7 @@ public class AvatarAnimatorController : MonoBehaviour
         }
         else if (!mouseHeld && isDragging) SetDragging(false);
 
+        // Lógica de Idle
         idleTimer += Time.deltaTime;
         if (idleTimer > IDLE_SWITCH_TIME)
         {
@@ -145,14 +161,75 @@ public class AvatarAnimatorController : MonoBehaviour
         }
         UpdateIdleStatus();
     }
+    
+    // --- O resto do script permanece muito similar, com pequenas limpezas ---
+
+    IEnumerator CheckSoundContinuously()
+    {
+        var wait = new WaitForSeconds(2f);
+        while (true)
+        {
+            CheckForSound();
+            yield return wait;
+        }
+    }
+
+    void CheckForSound()
+    {
+        if (animator == null || MenuActions.IsMovementBlocked() || !enableDancing || defaultDevice == null || isDragging)
+        {
+            if (isDancing) SetDancing(false);
+            return;
+        }
+        
+        bool soundIsPlaying = IsValidAppPlaying();
+        if (soundIsPlaying && !isDancing)
+        {
+            StartDancing();
+        }
+        else if (!soundIsPlaying && isDancing)
+        {
+            SetDancing(false);
+        }
+    }
+
+    void StartDancing()
+    {
+        if (animator == null) return;
+        currentDanceIndex = UnityEngine.Random.Range(0, DANCE_CLIP_COUNT);
+        animator.SetFloat(danceIndexParam, currentDanceIndex);
+        SetDancing(true);
+    }
+
+    void SetDancing(bool value)
+    {
+        if (animator == null) return;
+        isDancing = value;
+        animator.SetBool(isDancingParam, value);
+        if (dynamicDanceSync != null)
+        {
+            dynamicDanceSync.SetDanceState(isDancing, currentDanceIndex);
+        }
+    }
+    
     void SetDragging(bool value)
     {
+        if (animator == null) return;
         isDragging = value;
         animator.SetBool(isDraggingParam, value);
     }
 
+    void UpdateAllStates()
+    {
+        if(animator == null) return;
+        SetDancing(isDancing);
+        SetDragging(isDragging);
+        UpdateIdleStatus();
+    }
+
     void UpdateIdleStatus()
     {
+        if (animator == null) return;
         bool inIdle = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle");
         if (isIdle != inIdle)
         {
@@ -161,8 +238,43 @@ public class AvatarAnimatorController : MonoBehaviour
         }
     }
 
+    bool IsValidAppPlaying()
+    {
+        // A lógica de verificação de som permanece a mesma
+        if (Time.time - lastSoundCheckTime < 2f) return isDancing;
+        lastSoundCheckTime = Time.time;
+        try
+        {
+            var sessions = defaultDevice.AudioSessionManager.Sessions;
+            for (int i = 0; i < sessions.Count; i++)
+            {
+                var s = sessions[i];
+                if (s.State == NAudio.CoreAudioApi.Interfaces.AudioSessionState.AudioSessionStateActive && s.AudioMeterInformation.MasterPeakValue > SOUND_THRESHOLD)
+                {
+                    uint pid = s.GetProcessID;
+                    if (pid == 0) continue;
+                    using (var p = Process.GetProcessById((int)pid))
+                    {
+                        string pname = p.ProcessName;
+                        if (string.IsNullOrEmpty(pname)) continue;
+                        foreach (string app in allowedApps)
+                        {
+                            if (pname.Equals(app, StringComparison.OrdinalIgnoreCase)) return true;
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Silenciosamente ignora erros aqui para não poluir o console
+        }
+        return false;
+    }
+    
     IEnumerator SmoothIdleTransition(int newIdle)
     {
+        if (animator == null) yield break;
         float elapsed = 0f, start = animator.GetFloat(idleIndexParam);
         while (elapsed < IDLE_TRANSITION_TIME)
         {
@@ -173,7 +285,9 @@ public class AvatarAnimatorController : MonoBehaviour
         animator.SetFloat(idleIndexParam, newIdle);
     }
 
-    public bool IsInIdleState() => isIdle;
+    void OnDisable() => CleanupAudioResources();
+    void OnDestroy() => CleanupAudioResources();
+    void OnApplicationQuit() => CleanupAudioResources();
 
     void CleanupAudioResources()
     {

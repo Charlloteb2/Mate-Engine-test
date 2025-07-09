@@ -21,7 +21,7 @@ public class AvatarAnimatorReceiver : MonoBehaviour
     public void SetAnimator(Animator newAnimator)
     {
         avatarAnimator = newAnimator;
-        LogWithColor($"[Receiver] SetAnimator called! Neuer Animator gesetzt für: {avatarName} ({gameObject.name})", "#93FF4F");
+        LogWithColor($"[Receiver] SetAnimator called! Neuer Animator gesetzt fï¿½r: {avatarName} ({gameObject.name})", "#93FF4F");
     }
 
     void OnEnable()
@@ -39,7 +39,7 @@ public class AvatarAnimatorReceiver : MonoBehaviour
         LogWithColor($"[Receiver] Destroyed: {avatarName} ({gameObject.name})", "#FF4848");
     }
 
-    // Für Debugging: Colorful Log
+    // Fï¿½r Debugging: Colorful Log
     void LogWithColor(string msg, string hexColor)
     {
         Debug.Log($"<color={hexColor}>{msg}</color>", this);

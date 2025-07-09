@@ -23,6 +23,10 @@ public class VRMLoader : MonoBehaviour
     public RuntimeAnimatorController animatorController;
     public GameObject componentTemplatePrefab;
 
+    // NOVO: Referência ao seu DynamicDanceSync
+    [Header("Dance Sync Integration")]
+    public DynamicDanceSync dynamicDanceSyncRef; // Renomeado para evitar conflito com 'dynamicDanceSync' no AvatarAnimatorController
+
     private GameObject currentModel;
     private bool isLoading = false;
     private string modelPathKey = "SavedPathModel";
@@ -71,7 +75,7 @@ public class VRMLoader : MonoBehaviour
             }
             else
             {
-                Debug.LogError("[VRMLoader] DLC Prefab nicht gefunden: " + path);
+                UnityEngine.Debug.LogError("[VRMLoader] DLC Prefab nicht gefunden: " + path);
             }
             return;
         }
@@ -104,7 +108,7 @@ public class VRMLoader : MonoBehaviour
                         loadedModel = instance10.Root;
                 }
             }
-            catch { }
+            catch { } // Catch-all for VRM1.0 loading attempts
 
             if (loadedModel == null)
             {
@@ -116,7 +120,7 @@ public class VRMLoader : MonoBehaviour
                     if (instance.Root != null)
                         loadedModel = instance.Root;
                 }
-                catch { return; }
+                catch { return; } // Catch-all for VRM0.X loading attempts
             }
 
             if (loadedModel == null) return;
@@ -127,7 +131,7 @@ public class VRMLoader : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError("[VRMLoader] Failed to load model: " + ex.Message);
+            UnityEngine.Debug.LogError("[VRMLoader] Failed to load model: " + ex.Message);
         }
     }
 
@@ -136,14 +140,14 @@ public class VRMLoader : MonoBehaviour
         var bundle = AssetBundle.LoadFromFile(path);
         if (bundle == null)
         {
-            Debug.LogError("[VRMLoader] Failed to load AssetBundle at: " + path);
+            UnityEngine.Debug.LogError("[VRMLoader] Failed to load AssetBundle at: " + path);
             return;
         }
 
         var prefab = bundle.LoadAllAssets<GameObject>().FirstOrDefault();
         if (prefab == null)
         {
-            Debug.LogError("[VRMLoader] No prefab found in AssetBundle.");
+            UnityEngine.Debug.LogError("[VRMLoader] No prefab found in AssetBundle.");
             bundle.Unload(false);
             return;
         }
@@ -167,6 +171,31 @@ public class VRMLoader : MonoBehaviour
         EnableSkinnedMeshRenderers(currentModel);
         AssignAnimatorController(currentModel);
         InjectComponentsFromPrefab(componentTemplatePrefab, currentModel);
+
+        // NOVO: CONECTA O AvatarAnimatorController DO MODELO RECÉM-CARREGADO AO DynamicDanceSync
+        // E DEFINE O VALOR DE 'greetingAnimationStateName'
+        AvatarAnimatorController avatarAnimController = currentModel.GetComponentInChildren<AvatarAnimatorController>();
+        if (avatarAnimController != null)
+        {
+            if (dynamicDanceSyncRef != null)
+            {
+                avatarAnimController.dynamicDanceSync = dynamicDanceSyncRef;
+                UnityEngine.Debug.Log($"[VRMLoader] AvatarAnimatorController de {currentModel.name} conectado ao DynamicDanceSync!");
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("[VRMLoader] dynamicDanceSyncRef não atribuído no VRMLoader. O controle de dança não funcionará para o modelo customizado.");
+            }
+
+            // Define o valor de greetingAnimationStateName diretamente aqui
+            avatarAnimController.greetingAnimationStateName = "Intro";
+            UnityEngine.Debug.Log($"[VRMLoader] AvatarAnimatorController.greetingAnimationStateName definido como 'Intro' para {currentModel.name}!");
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning($"[VRMLoader] AvatarAnimatorController não encontrado em {currentModel.name} ou seus filhos.");
+        }
+
 
         /*
         var avatarSettingsMenu = FindFirstObjectByType<AvatarSettingsMenu>();
@@ -227,11 +256,14 @@ public class VRMLoader : MonoBehaviour
 
         StartCoroutine(DelayedRefreshStats());
 
+        // Este if MEModLoader.Instance != null deve ser o que está chamando o SetAnimator para o 'mainModel'
+        // É importante que o AssignHandlersForCurrentAvatar também garanta que o AvatarAnimatorController
+        // do 'mainModel' tenha sua referência 'dynamicDanceSync' atribuída.
         if (MEModLoader.Instance != null)
             MEModLoader.Instance.AssignHandlersForCurrentAvatar(loadedModel);
 
         ReleaseRamAndUnloadAssets();
-        SettingsHandlerUtility.ReloadAllSettingsHandlers(); // Should load the settings from all modules and load it to new vrm files
+        SettingsHandlerUtility.ReloadAllSettingsHandlers();
     }
 
 
@@ -261,6 +293,29 @@ public class VRMLoader : MonoBehaviour
         PlayerPrefs.DeleteKey(modelPathKey);
         PlayerPrefs.Save();
 
+        // NOVO: Conecta o AvatarAnimatorController do mainModel quando ele é reativado
+        // Isso é importante se o mainModel também usa AvatarAnimatorController
+        AvatarAnimatorController mainAvatarController = mainModel.GetComponentInChildren<AvatarAnimatorController>();
+        if (mainAvatarController != null)
+        {
+            if (dynamicDanceSyncRef != null)
+            {
+                mainAvatarController.dynamicDanceSync = dynamicDanceSyncRef;
+                UnityEngine.Debug.Log($"[VRMLoader] AvatarAnimatorController do mainModel conectado ao DynamicDanceSync durante ResetModel.");
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("[VRMLoader] dynamicDanceSyncRef não atribuído no VRMLoader. O controle de dança não funcionará para o modelo padrão.");
+            }
+
+            // Define o valor de greetingAnimationStateName para o mainModel também
+            mainAvatarController.greetingAnimationStateName = "Intro";
+            UnityEngine.Debug.Log($"[VRMLoader] AvatarAnimatorController.greetingAnimationStateName definido como 'Intro' para o mainModel durante ResetModel.");
+        }
+        else if (mainAvatarController == null)
+        {
+            UnityEngine.Debug.LogWarning("[VRMLoader] AvatarAnimatorController não encontrado no mainModel durante ResetModel.");
+        }
         if (MEModLoader.Instance != null && mainModel != null)
             MEModLoader.Instance.AssignHandlersForCurrentAvatar(mainModel);
         ReleaseRamAndUnloadAssets();
@@ -318,8 +373,15 @@ public class VRMLoader : MonoBehaviour
         foreach (var templateComp in templateObj.GetComponents<MonoBehaviour>())
         {
             var type = templateComp.GetType();
-            if (targetModel.GetComponent(type) != null)
+            // Evita adicionar componentes duplicados no targetModel
+            if (targetModel.GetComponent(type) != null) 
+            {
+                // Se o componente já existe, podemos tentar copiar os valores de volta
+                // (útil se o componente já vier com o VRM e não for adicionado via template)
+                // CopyComponentValues(templateComp, targetModel.GetComponent(type)); // Opcional
                 continue;
+            }
+            
             var newComp = targetModel.AddComponent(type);
             CopyComponentValues(templateComp, newComp);
 
@@ -347,7 +409,7 @@ public class VRMLoader : MonoBehaviour
                 field.SetValue(destination, field.GetValue(source));
         }
         var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                        .Where(p => p.CanWrite && p.GetSetMethod(true) != null);
+                             .Where(p => p.CanWrite && p.GetSetMethod(true) != null);
         foreach (var prop in props)
         {
             try { prop.SetValue(destination, prop.GetValue(source)); }
@@ -388,19 +450,34 @@ public class VRMLoader : MonoBehaviour
         PlayerPrefs.DeleteKey(modelPathKey);
         PlayerPrefs.Save();
 
+        // NOVO: Conecta o AvatarAnimatorController do mainModel quando ele é ativado
+        AvatarAnimatorController mainAvatarController = mainModel.GetComponentInChildren<AvatarAnimatorController>();
+        if (mainAvatarController != null)
+        {
+            if (dynamicDanceSyncRef != null)
+            {
+                mainAvatarController.dynamicDanceSync = dynamicDanceSyncRef;
+                UnityEngine.Debug.Log($"[VRMLoader] AvatarAnimatorController do mainModel conectado ao DynamicDanceSync durante ActivateDefaultModel.");
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("[VRMLoader] dynamicDanceSyncRef não atribuído no VRMLoader. O controle de dança não funcionará para o modelo padrão.");
+            }
+
+            // Define o valor de greetingAnimationStateName para o mainModel também
+            mainAvatarController.greetingAnimationStateName = "Intro";
+            UnityEngine.Debug.Log($"[VRMLoader] AvatarAnimatorController.greetingAnimationStateName definido como 'Intro' para o mainModel durante ActivateDefaultModel.");
+        }
+        else if (mainAvatarController == null)
+        {
+            UnityEngine.Debug.LogWarning("[VRMLoader] AvatarAnimatorController não encontrado no mainModel durante ActivateDefaultModel.");
+        }
+
         if (MEModLoader.Instance != null && mainModel != null)
             MEModLoader.Instance.AssignHandlersForCurrentAvatar(mainModel);
-        /*
-        var avatarSettingsMenu = FindFirstObjectByType<AvatarSettingsMenu>();
-        if (avatarSettingsMenu != null)
-        {
-            avatarSettingsMenu.LoadSettings();
-            avatarSettingsMenu.ApplySettings();
-        }
-        */
+        
         ReleaseRamAndUnloadAssets();
-        SettingsHandlerUtility.ReloadAllSettingsHandlers(); // Should load all settings to new VRM Files
-
+        SettingsHandlerUtility.ReloadAllSettingsHandlers();
     }
 
     private void ReleaseRamAndUnloadAssets()
