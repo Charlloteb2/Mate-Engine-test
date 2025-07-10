@@ -1,22 +1,32 @@
 Idioma: [Inglês](#this-is-a-fork-from-mate-engine) [Portugês](#este-é-um-fork-do-mate-engine)
 
 # This is a Fork from [Mate Engine](https://github.com/shinyflvre/Mate-Engine)
+
 ##   There will be some changes and and new things i wanted.
 
 - Portuguese Language added 🇧🇷
 - Language selection settings changed
+
+- *New BPM detection*
+  **You need to accept the firewall to include MateEngineX, otherwise bpm detection will not work (cause it uses UDP to send new bpm from another executable)
+  the avatar will try to keep the dance animation on the music playing, disabling on system tray will keep last bpm detected
+  **sometimes it takes 30~40 sec to identify the new bpm**
+
+  if there is no bpm detection, please use the option Extra Settings and Bpm fix on system tray...
   
-- *New Screen Light Detection* (opening main_tray.exe will update the color of new lights on the avatar, if you dont want to use just open *LightDetectionReset.bat* to disable the new lights)
+
+- *New Screen Light Detection* for now to change the light settings you need to edit the light_settings.json file in the MateEngineX_Data\StreamingAssets folder
 
 ![ScreenLight1](https://i.imgur.com/1jmszcU.gif)
 
-To use it, just reduce the lights intensity on the Mate Engine Settings and open **main_tray.exe**
-(the main_tray.exe is the same as media_cores_tela.py if you wanna do a main_tray.exe yourself just use pyinstaller on media_cores_tela.py)
+disable option is on the system tray
 
 ## To Do
-- Change the way the new color is send to mateengine
-- Add settings to the light detector
-- Improve Changing lights position
+- Change the way the new color is send to mateengine ❌not for now
+- Add settings to the light detector ❌not for now
+- Add settings to bpm detection ▶️ em progresso
+- Improve Changing lights position and detect light origin on screen ▶️ em progresso
+- Add new BPM Detection System ✔️
 ---
 ---
 # Este é um fork do [Mate Engine](https://github.com/shinyflvre/Mate-Engine)
@@ -24,12 +34,26 @@ To use it, just reduce the lights intensity on the Mate Engine Settings and open
 
 - Idioma Português adicionado 🇧🇷 (o principal motivo era ter o mate engine em português ptbr)
 - Mudanças na configuração de idioma
+- *Detecção de novas BPM*
+**Você precisa aceitar o firewall para incluir o MateEngineX, caso contrário, a detecção de BPM não funcionará (pois ele usa UDP para enviar novas BPM de outro executável).
+O avatar tentará manter a animação de dança enquanto a música estiver tocando. Desabilitar na bandeja do sistema manterá as últimas BPM detectadas.
 
-- *Novo sistema de detecção de luz* (abrindo main_tray.exe vai atualizar novas cores no avatar, se você não quiser usar é só abrir *LightDetectionReset.bat* para desativar as novas luzes)
+- *Novo sistema de detecção de luz* por enquanto, para alterar as configurações de luz, você precisa editar o arquivo light_settings.json na pasta MateEngineX_Data\StreamingAssets
+  
 - ![ScreenLight1](https://i.imgur.com/1jmszcU.gif)
 
+as opções estão na bandeja do sistema
 
-# Original Mate-Engine readme
+## A Fazer
+- Alterar a forma como a nova cor é enviada para o mateengine ❌depois
+- Adicionar configurações ao detector de luz ❌depois
+- Adicionar configurações à detecção de BPM ▶️ em progresso
+- Melhorar a posição das luzes e detectar origem da luz na tela ▶️ em progresso
+- Adicionar um novo Sistema de Detecção de BPM ✔️
+
+## This fork follows and is under all the licence requeriments on the original repository all the files required to build are on this repository and this will never be used commercially anyway.
+## All thanks to [Shiny](https://github.com/shinyflvre)
+# Original [Mate Engine](https://github.com/shinyflvre/Mate-Engine) readme
 ---
 # 🌐 Language / 言語選択
 
